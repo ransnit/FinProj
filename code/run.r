@@ -29,7 +29,8 @@ train.rf.model <- function(data, test_proportion = 0.3)
             all(!is.infinite(response)))
   
   # Separate data into test and train:
-  TRAIN <- ceiling(test_proportion*nrow(data))
+  TRAIN <- ceiling((1-test_proportion)*nrow(data))
+  
   predictors_t <- tail(predictors, -TRAIN)
   response_t <- tail(response, -TRAIN)
   predictors <- head(predictors, TRAIN)
