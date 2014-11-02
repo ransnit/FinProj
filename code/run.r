@@ -21,6 +21,8 @@ train.rf.model <- function(data, test_proportion = 0.3)
   to_delete <- rows.to.delete(nrows)
   predictors <- predictors[-to_delete,]
   response <- response[-to_delete]
+  predictors <- predictors[!is.na(response),]
+  response <- response[!is.na(response)]
   
   # Assert validity:
   stopifnot(all(!is.na(predictors)), 
@@ -29,16 +31,24 @@ train.rf.model <- function(data, test_proportion = 0.3)
             all(!is.infinite(response)))
   
   # Separate data into test and train:
-  TRAIN <- ceiling((1-test_proportion)*nrow(data))
+  TRAIN <- ceiling((1-test_proportion)*nrow(predictors))
   
-  predictors_t <- tail(predictors, -TRAIN)
-  response_t <- tail(response, -TRAIN)
-  predictors <- head(predictors, TRAIN)
-  response <- head(response, TRAIN)
+  predictors_test <- tail(predictors, -TRAIN)
+  response_test <- tail(response, -TRAIN)
+  predictors_train <- head(predictors, TRAIN)
+  response_train <- head(response, TRAIN)
+  
+  rm(predictors, response)
+  
+  cat("Done creating predictors & response.\n")
+  cat("No. of rows in train-data: ", nrow(predictors_train), ".\n")
+  cat("No. of rows in test-data: ", nrow(predictors_test), ".\n")
+  cat("Training RF-model...\n")
   
   # Train model:
-  model <- randomForest(x = predictors, y = response, xtest = predictors_t, ytest = response_t, 
-                        na.action = na.omit, keep.forest=T, importance = T)
+  model <- randomForest(x = predictors_train, y = response_train, 
+                        xtest = predictors_test, ytest = response_test, 
+                        ntree = 1000, na.action = na.omit, keep.forest=T, importance = T)
   return (model)
 }
 
