@@ -6,6 +6,9 @@ source("delete_bad_rows.r")
 
 train.rf.model <- function(data, test_proportion = 0.3)
 {
+  t1 <- Sys.time()
+  cat("Started Processising...\n")
+  
   # Initialize structures:
   predictors <- create.predictors(data)
   response <- create.response(data)
@@ -40,15 +43,16 @@ train.rf.model <- function(data, test_proportion = 0.3)
   
   rm(predictors, response)
   
-  cat("Done creating predictors & response.\n")
-  cat("No. of rows in train-data: ", nrow(predictors_train), ".\n")
-  cat("No. of rows in test-data: ", nrow(predictors_test), ".\n")
+  cat("Done creating predictors & response. Time duration:", Sys.time() - t1,"mins.\n")
+  cat("No. of rows in train-data:", nrow(predictors_train), "\n")
+  cat("No. of rows in test-data:", nrow(predictors_test), "\n")
   cat("Training RF-model...\n")
   
   # Train model:
   model <- randomForest(x = predictors_train, y = response_train, 
-                        xtest = predictors_test, ytest = response_test, 
-                        ntree = 1000, na.action = na.omit, keep.forest=T, importance = T)
+                        xtest = predictors_test, ytest = response_test, ntree = 10,
+                        na.action = na.omit, keep.forest=T, importance = T)
+  cat("Done training model. Time duration:", Sys.time() - t1,"mins.\n")
   return (model)
 }
 
