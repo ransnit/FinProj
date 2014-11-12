@@ -4,7 +4,7 @@ create.predictors <- function(data)
 {
   data <- preprocess.data(data)
   n <- nrow(data)
-  m <- 1 + 4 + 2 + length(PRICE_EMA_INDICES) + length(VOLUME_EMA_INDICES) + 2 #features_num
+  m <- 1 + 4 + 2 + length(PRICE_EMA_INDICES) + 1#length(VOLUME_EMA_INDICES)# + 2 #features_num
   days_num <- n / ROWS_PER_DAY
   predictors <- matrix(0, n, m)
   
@@ -30,22 +30,25 @@ create.predictors <- function(data)
     predictors[,col_index] <- (data$CLOSE - data[, val_lable]) / data[, std_lable]
     col_index <- col_index + 1
   }
+
+  predictors[,col_index] <- data$VOLUME
+  col_index <- col_index + 1
   
   # Normalized distances between now's volume and today's EMAs
-  for (i in VOLUME_EMA_INDICES)
-  {
-    val_lable <- paste("EMA", i, "VOLUME", sep="_")
-    std_lable <- paste("EMSTD", i, "VOLUME", sep="_")
-    predictors[,col_index] <- (data$VOLUME - data[, val_lable]) / data[, std_lable]
-    col_index <- col_index + 1
-  }
-  
-  # Candle-tail's ratios
-  predictors[,col_index] <- data$CTD
-  col_index <- col_index + 1
-  
-  predictors[,col_index] <- data$CTU
-  col_index <- col_index + 1
+#   for (i in VOLUME_EMA_INDICES)
+#   {
+#     val_lable <- paste("EMA", i, "VOLUME", sep="_")
+#     std_lable <- paste("EMSTD", i, "VOLUME", sep="_")
+#     predictors[,col_index] <- (data$VOLUME - data[, val_lable]) / data[, std_lable]
+#     col_index <- col_index + 1
+#   }
+#   
+#   # Candle-tail's ratios
+#   predictors[,col_index] <- data$CTD
+#   col_index <- col_index + 1
+#   
+#   predictors[,col_index] <- data$CTU
+#   col_index <- col_index + 1
   
   return (predictors)
 }
