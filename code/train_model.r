@@ -6,30 +6,45 @@ require("randomForest")
 train.rf.model <- function(predictors, response, test_proportion = 0.3)
 {
   t <- Sys.time()
-  nrows <- nrow(predictors)
-  
-  # Truncate structurs:
-  to_delete <- rows.to.delete(nrows)
-  predictors <- predictors[-to_delete,]
-  response <- response[-to_delete]
-  predictors <- predictors[!is.na(response),]
-  response <- response[!is.na(response)]
-  
-  # Assert validity:
-  stopifnot(all(!is.na(predictors)), 
-            all(!is.na(response)), 
-            all(!is.infinite(predictors)),
-            all(!is.infinite(response)))
-  
-  # Separate data into test and train:
-  TRAIN <- ceiling((1-test_proportion)*nrow(predictors))
-  
+  nrows <- nrow(predictors)  
+
+	# Separate data into test and train:
+	TRAIN <- ceiling((1-test_proportion)*ndays(predictors))	* ROWS_PER_DAY
+
   predictors_test <- tail(predictors, -TRAIN)
   response_test <- tail(response, -TRAIN)
   predictors_train <- head(predictors, TRAIN)
   response_train <- head(response, TRAIN)
   
   rm(predictors, response)
+
+  # Truncate structurs:
+  to_delete <- rows.to.delete(nrow(predictors_test))
+  predictors_test <- predictors_test[-to_delete,]
+  response_test <- response_test[-to_delete]
+
+	to_delete <- rows.to.delete(nrow(predictors_train))
+  predictors_train <- predictors_train[-to_delete,]
+  response_train <- response_train[-to_delete]
+  
+  cat("No. of NA response found in train data:", length(which(is.na(response_train))), "\n")
+  predictors_train <- predictors_train[!is.na(response_train),]
+  response_train <- response_train[!is.na(response_train)]
+
+  cat("No. of NA response found in test data:", length(which(is.na(response_test))), "\n")
+  predictors_test <- predictors_test[!is.na(response_test),]
+  response_test <- response_test[!is.na(response_test)]
+  
+  # Assert validity:
+  stopifnot(all(!is.na(predictors_test)), 
+            all(!is.na(response_test)), 
+            all(!is.infinite(predictors_test)),
+            all(!is.infinite(response_test)))
+
+  stopifnot(all(!is.na(predictors_train)), 
+            all(!is.na(response_train)), 
+            all(!is.infinite(predictors_train)),
+            all(!is.infinite(response_train)))
   
   train_proportions <- c(length(which(response_train==-1)), length(which(response_train==0)), length(which(response_train==1))) / length(response_train)
   test_proportions <- c(length(which(response_test==-1)), length(which(response_test==0)), length(which(response_test==1))) / length(response_test)
@@ -42,7 +57,7 @@ train.rf.model <- function(predictors, response, test_proportion = 0.3)
   
   # Train model:
   model <- randomForest(x = predictors_train, y = response_train, 
-                        xtest = predictors_test, ytest = response_test,
+                        xtest = predictors_test, ytest = response_test, ntree = 1000,
                         na.action = na.omit, keep.forest=T, importance = T)
   cat("Done training model. Time duration:", Sys.time() - t,"mins.\n")
   return (model)
