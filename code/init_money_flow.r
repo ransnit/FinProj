@@ -1,23 +1,25 @@
 source("add_zero_col.r")
 
-initialize.money.ratio <- function(data, l)
+initialize.money.ratio <- function(l, price, volume)
 {
-	current.typical.price.class <- function(row)
+	stopifnot(length(price) == length(volume))
+  
+  current.typical.price.class <- function(row)
 	{
 		if (row%%ROWS_PER_DAY == 1)
 			return (NA)
 
-		if (data$TYPICAL[row-1] > data$TYPICAL[row])
+		if (price[row-1] > price[row])
 			return (-1)
 
-		if (data$TYPICAL[row-1] < data$TYPICAL[row])
+		if (price[row-1] < price[row])
 			return (1)
 
 		return (0)
 	}
 
-	tp_classes <- sapply(1:nrow(data), current.typical.price.class)
-	money_flow <- data$VOLUME * data$TYPICAL
+	tp_classes <- sapply(1:length(price), current.typical.price.class)
+	money_flow <- volume * price
 
 	money.ratio.per.row <- function(row)
 	{
@@ -29,9 +31,12 @@ initialize.money.ratio <- function(data, l)
 
 		positives_sum <- sum(mf[which(tpc == 1)])
 		negatives_sum <- sum(mf[which(tpc == -1)])
+    
+    if (positives_sum == 0 || negatives_sum == 0)
+      return (0)
 		
 		return (positives_sum / negatives_sum)
 	}
 
-	return (sapply(1:nrow(data), money.ratio.per.row))
+	return (sapply(1:length(price), money.ratio.per.row))
 }

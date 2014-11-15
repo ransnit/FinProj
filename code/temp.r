@@ -8,14 +8,19 @@ p_IBM <- create.predictors(data_IBM)
 p_SPY <- create.predictors(data_SPY)
 p_XLK <- create.predictors(data_XLK)
 
-predictors <- cbind(p_SPY, p_XLK[,-1], p_IBM[,-1])
+predictors <- cbind(p_SPY[, -c(10,11,12)], p_XLK[,-c(1,10,11,12)], p_IBM[,-1])
 response <- create.response(data_IBM)
 
 rm(data_IBM, data_SPY, data_XLK, p_IBM, p_SPY, p_XLK)
 
-model <- train.rf.model(predictors, response)
-
-show(model)
-plot(model)
-i <- (model$importance[,1] + model$importance[,2] + model$importance[,3] + model$importance[,4]) / 4
-plot(i)
+model1 <- train.rf.model(predictors, response)
+show(model1)
+saveRDS(model1, "model1.rds")
+# 
+# model2 <- train.rf.model(predictors, response)
+# show(model2)
+# saveRDS(model2, "model2.rds")
+# 
+# model3 <- train.rf.model(predictors, response)
+# show(model3)
+# saveRDS(model3, "model3.rds")

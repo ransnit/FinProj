@@ -2,6 +2,7 @@ source("emas.r")
 source("init_daily_vals.r")
 source("init_yester_vals.r")
 source("candle_tail_ratios.r")
+source("init_money_flow.r")
 
 preprocess.data <- function(data)
 {
@@ -22,15 +23,15 @@ preprocess.data <- function(data)
   data$SD <- initialize.daily.sd(data, "CLOSE")
   data$SDT <- initialize.daily.sd(data, "TYPICAL")
   
-  ## EMAs (CLOSE):
-  for (i in PRICE_EMA_INDICES)  
-  {
-    lable_name <- paste("EMA",i , "CLOSE", sep="_")
-    data[, lable_name] <- init.ema(data, i, "CLOSE")
-    
-    lable_name <- paste("EMSTD",i , "CLOSE", sep="_")
-    data[, lable_name] <- init.emstd(data, i, "CLOSE")
-  }
+#   ## EMAs (CLOSE):
+#   for (i in PRICE_EMA_INDICES)  
+#   {
+#     lable_name <- paste("EMA",i , "CLOSE", sep="_")
+#     data[, lable_name] <- init.ema(data, i, "CLOSE")
+#     
+#     lable_name <- paste("EMSTD",i , "CLOSE", sep="_")
+#     data[, lable_name] <- init.emstd(data, i, "CLOSE")
+#   }
 
   ## EMAs (TYPICAL):
   for (i in PRICE_EMA_INDICES)  
