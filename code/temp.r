@@ -17,5 +17,4 @@ model <- train.rf.model(predictors, response)
 
 show(model)
 plot(model)
-i <- (model$importance[,1] + model$importance[,2] + model$importance[,3] + model$importance[,4]) / 4
-plot(i)
+plot(model$importance[,4])
