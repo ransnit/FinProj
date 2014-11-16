@@ -16,11 +16,4 @@ rm(data_IBM, data_SPY, data_XLK, p_IBM, p_SPY, p_XLK)
 model1 <- train.rf.model(predictors, response)
 show(model1)
 saveRDS(model1, "model1.rds")
-# 
-# model2 <- train.rf.model(predictors, response)
-# show(model2)
-# saveRDS(model2, "model2.rds")
-# 
-# model3 <- train.rf.model(predictors, response)
-# show(model3)
-# saveRDS(model3, "model3.rds")
+

@@ -1,4 +1,8 @@
-source("init_all.r")
+source("emas.r")
+source("init_daily_vals.r")
+source("init_yester_vals.r")
+source("candle_tail_ratios.r")
+source("init_money_flow.r")
 source("init_class_props.r")
 
 create.predictors <- function(data)
@@ -45,14 +49,6 @@ create.predictors <- function(data)
 
   # Normalized distances between now's close-price and today's EMAs
   col_index <- 13
-#   for (i in PRICE_EMA_INDICES)
-#   {
-#     val_lable <- paste("EMA", i, "CLOSE", sep="_")
-#     std_lable <- paste("EMSTD", i, "CLOSE", sep="_")
-#     predictors[,col_index] <- (data$CLOSE - data[, val_lable]) / data[, std_lable]
-#     col_index <- col_index + 1
-#   }
-
   for (i in PRICE_EMA_INDICES)
   {
     ema <- init.ema(i, typical)

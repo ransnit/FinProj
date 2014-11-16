@@ -57,7 +57,7 @@ train.rf.model <- function(predictors, response, test_proportion = 0.3)
   
   # Train model:
   model <- randomForest(x = predictors_train, y = response_train, 
-                        xtest = predictors_test, ytest = response_test, ntree = 1500, # TODO
+                        xtest = predictors_test, ytest = response_test, ntree = 1000, # TODO
                         na.action = na.omit, keep.forest=T, importance = T)
   cat("Done training model. Time duration:", Sys.time() - t,"mins.\n")
   return (model)

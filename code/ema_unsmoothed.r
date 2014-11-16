@@ -1,4 +1,4 @@
-# source("add_zero_col.r")
+# source("config.r")
 #
 # init.ema <- function(data, l, val_lable)
 # {

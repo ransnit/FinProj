@@ -1,8 +1,4 @@
-source("emas.r")
-source("init_daily_vals.r")
-source("init_yester_vals.r")
-source("candle_tail_ratios.r")
-source("init_money_flow.r")
+
 
 preprocess.data <- function(data)
 {
