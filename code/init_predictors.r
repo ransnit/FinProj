@@ -46,8 +46,9 @@ create.predictors <- function(data)
   predictors[,10] <- cps[, 1]
   predictors[,11] <- cps[, 2]
   predictors[,12] <- cps[, 3]
-
-  # Normalized distances between now's close-price and today's EMAs
+  
+  pnames <- c("TIME", "YH", "YL", "YO", "YC", "YT", "DH", "DL", "DT", "P_1", "P_0", "P_-1")
+  # Normalized distances between now's typical-price and today's EMAs
   col_index <- 13
   for (i in PRICE_EMA_INDICES)
   {
@@ -55,6 +56,8 @@ create.predictors <- function(data)
     emstd <- init.emstd(i, typical, ema)
     predictors[,col_index] <- (typical - ema) / emstd
     col_index <- col_index + 1
+    col_name <-paste("EMA", i, sep="")
+    pnames <- c(pnames, col_name)
   }
 
 	# Money-ratios:
@@ -62,7 +65,11 @@ create.predictors <- function(data)
   {
 		predictors[,col_index] <- initialize.money.ratio(i, typical, data$VOLUME)
 		col_index <- col_index + 1
+		col_name <-paste("MR", i, sep="")
+		pnames <- c(pnames, col_name)
   }
+  
+  colnames(predictors) <- pnames
 	
   return (predictors)
 }
